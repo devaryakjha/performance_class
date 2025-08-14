@@ -25,17 +25,29 @@ class PerformanceClassPlugin: FlutterPlugin, MethodCallHandler {
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
       "getPerformanceClass" -> {
-        val performanceClass = DevicePerformanceClass.getDevicePerformanceClass(context)
-        result.success(performanceClass.ordinal)
+        try {
+          val performanceClass = DevicePerformanceClass.getDevicePerformanceClass(context)
+          result.success(performanceClass.ordinal)
+        } catch (e: Exception) {
+          result.error("PERFORMANCE_CLASS_ERROR", "Failed to get performance class", e.message)
+        }
       }
       "getDeviceInfo" -> {
-        val deviceInfo = getDeviceInfo()
-        result.success(deviceInfo)
+        try {
+          val deviceInfo = getDeviceInfo()
+          result.success(deviceInfo)
+        } catch (e: Exception) {
+          result.error("DEVICE_INFO_ERROR", "Failed to get device info", e.message)
+        }
       }
       "readAverageMaxCpuFreq" -> {
-        val cpuCount = call.argument<Int>("cpuCount") ?: Runtime.getRuntime().availableProcessors()
-        val cpuFreq = readAverageMaxCpuFreq(cpuCount)
-        result.success(cpuFreq)
+        try {
+          val cpuCount = call.argument<Int>("cpuCount") ?: Runtime.getRuntime().availableProcessors()
+          val cpuFreq = readAverageMaxCpuFreq(cpuCount)
+          result.success(cpuFreq)
+        } catch (e: Exception) {
+          result.error("CPU_FREQ_ERROR", "Failed to read CPU frequency", e.message)
+        }
       }
       else -> {
         result.notImplemented()
@@ -50,7 +62,7 @@ class PerformanceClassPlugin: FlutterPlugin, MethodCallHandler {
   private fun getDeviceInfo(): Map<String, Any> {
     val androidVersion = Build.VERSION.SDK_INT
     val cpuCount = Runtime.getRuntime().availableProcessors()
-    val memoryClass = (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
+    val totalMemoryMB = getTotalMemoryMB()
     val maxCpuFreq = readAverageMaxCpuFreq(cpuCount)
     val mediaPerformanceClass = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       Build.VERSION.MEDIA_PERFORMANCE_CLASS
@@ -61,10 +73,19 @@ class PerformanceClassPlugin: FlutterPlugin, MethodCallHandler {
     return mapOf(
       "android_version" to androidVersion,
       "cpu_count" to cpuCount,
-      "memory_class_mb" to (memoryClass * 16), // Convert to approximate MB
+      "memory_class_mb" to totalMemoryMB,
       "max_cpu_freq_mhz" to maxCpuFreq,
       "media_performance_class" to mediaPerformanceClass
     )
+  }
+
+  private fun getTotalMemoryMB(): Int {
+    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val memoryInfo = ActivityManager.MemoryInfo()
+    activityManager.getMemoryInfo(memoryInfo)
+    
+    // Convert from bytes to MB
+    return (memoryInfo.totalMem / (1024 * 1024)).toInt()
   }
 
   private fun readAverageMaxCpuFreq(cpuCount: Int): Int {
@@ -124,7 +145,7 @@ enum class DevicePerformanceClass {
                 try {
                     val androidVersion = Build.VERSION.SDK_INT
                     val cpuCount = Runtime.getRuntime().availableProcessors()
-                    val memoryClass = (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
+                    val totalMemoryMB = getTotalMemoryMB(context)
 
                     _devicePerformanceClass = when {
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> { // API 31 (Android 12) and above
@@ -132,11 +153,11 @@ enum class DevicePerformanceClass {
                             when {
                                 mediaPerformanceClass >= 33 -> PERFORMANCE_CLASS_HIGH
                                 mediaPerformanceClass >= 31 -> PERFORMANCE_CLASS_AVERAGE
-                                else -> fallbackToCpuCheck(androidVersion, cpuCount, memoryClass)
+                                else -> fallbackToCpuCheck(androidVersion, cpuCount, totalMemoryMB)
                             }
                         }
                         else -> {
-                            fallbackToCpuCheck(androidVersion, cpuCount, memoryClass)
+                            fallbackToCpuCheck(androidVersion, cpuCount, totalMemoryMB)
                         }
                     }
                     _performanceCacheValid = true
@@ -150,9 +171,17 @@ enum class DevicePerformanceClass {
             return _devicePerformanceClass
         }
 
-        private fun fallbackToCpuCheck(androidVersion: Int, cpuCount: Int, memoryClass: Int): DevicePerformanceClass {
+        private fun getTotalMemoryMB(context: Context): Int {
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val memoryInfo = ActivityManager.MemoryInfo()
+            activityManager.getMemoryInfo(memoryInfo)
+            
+            // Convert from bytes to MB
+            return (memoryInfo.totalMem / (1024 * 1024)).toInt()
+        }
+
+        private fun fallbackToCpuCheck(androidVersion: Int, cpuCount: Int, totalMemoryMB: Int): DevicePerformanceClass {
             val maxCpuFreq = readAverageMaxCpuFreq(cpuCount)
-            val totalMemoryMB = memoryClass * 16 // Convert memory class to approximate MB
 
             return when {
                 // Conservative checks for low-end devices

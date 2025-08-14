@@ -1,6 +1,6 @@
 name: performance_class
 description: "A Flutter plugin for Android device performance classification."
-version: 1.0.0
+version: 1.2.0
 homepage: https://github.com/devaryakjha/performance_class
 
 environment:

@@ -55,10 +55,20 @@ class PerformanceClassifier {
   Future<Map<String, dynamic>> getDeviceInfo() async {
     if (Platform.isAndroid) {
       try {
-        final result = await _channel.invokeMethod<Map<String, dynamic>>(
-          'getDeviceInfo',
-        );
-        return result ?? _getDefaultDeviceInfo();
+        final result = await _channel.invokeMethod('getDeviceInfo');
+
+        // Convert the result to the correct type
+        if (result is Map) {
+          final deviceInfo = <String, dynamic>{};
+          result.forEach((key, value) {
+            if (key is String) {
+              deviceInfo[key] = value;
+            }
+          });
+          return deviceInfo;
+        }
+
+        return _getDefaultDeviceInfo();
       } catch (e) {
         return _getDefaultDeviceInfo();
       }
