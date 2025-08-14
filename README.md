@@ -1,4 +1,4 @@
-# performance_class
+# anpec
 
 A Flutter plugin for **Android device performance classification**.
 
@@ -28,7 +28,7 @@ Add this dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  performance_class: ^1.0.0
+  anpec: ^1.0.0
 ```
 
 ## Usage
@@ -36,19 +36,19 @@ dependencies:
 ### Basic Usage
 
 ```dart
-import 'package:performance_class/performance_class.dart';
+import 'package:anpec/anpec.dart';
 
 void main() async {
   final classifier = PerformanceClassifier.instance;
-  
+
   // Get performance class as enum
   final performanceClass = await classifier.getPerformanceClass();
   print('Performance Class: ${performanceClass.name}'); // e.g., "high"
-  
+
   // Get human-readable string
   final displayName = classifier.getPerformanceClassString(performanceClass);
   print('Display Name: $displayName'); // e.g., "High"
-  
+
   // Get device information
   final deviceInfo = await classifier.getDeviceInfo();
   print('CPU Cores: ${deviceInfo['cpu_count']}');
@@ -74,7 +74,7 @@ print('Is Low-End: ${detailedInfo['isLowEnd']}');
 ### Using Performance Class Enum
 
 ```dart
-import 'package:performance_class/performance_class.dart';
+import 'package:anpec/anpec.dart';
 
 final classifier = PerformanceClassifier.instance;
 final performanceClass = await classifier.getPerformanceClass();
@@ -182,4 +182,3 @@ See the `example/` directory for a complete Flutter application demonstrating th
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-

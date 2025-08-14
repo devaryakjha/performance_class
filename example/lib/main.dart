@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:performance_class/performance_class.dart';
+import 'package:anpec/anpec.dart';
 
 void main() {
   runApp(const MyApp());

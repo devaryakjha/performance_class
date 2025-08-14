@@ -1,6 +1,6 @@
 # performance_class_example
 
-Demonstrates how to use the performance_class plugin.
+Demonstrates how to use the anpec plugin.
 
 ## Getting Started
 

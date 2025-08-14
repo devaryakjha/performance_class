@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "performance_class",
+      "name": "anpec",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "performance_class (profile mode)",
+      "name": "anpec (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "performance_class (release mode)",
+      "name": "anpec (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

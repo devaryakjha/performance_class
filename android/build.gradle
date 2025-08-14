@@ -1,4 +1,4 @@
-group = "run.arya.performance_class"
+group = "run.arya.anpec"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -25,7 +25,7 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
 android {
-    namespace = "run.arya.performance_class"
+    namespace = "run.arya.anpec"
 
     compileSdk = 35
 

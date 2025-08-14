@@ -1,7 +1,7 @@
-name: performance_class
+name: anpec
 description: "A Flutter plugin for Android device performance classification."
-version: 1.2.0
-homepage: https://github.com/devaryakjha/performance_class
+version: 1.0.0
+homepage: https://github.com/devaryakjha/anpec
 
 environment:
   sdk: ^3.8.1
@@ -36,8 +36,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: run.arya.performance_class
-        pluginClass: PerformanceClassPlugin
+        package: run.arya.anpec
+        pluginClass: AnpecPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

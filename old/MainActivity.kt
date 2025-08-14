@@ -1,4 +1,4 @@
-package run.arya.performance_class
+package run.arya.anpec
 
 import android.app.ActivityManager
 import android.content.Context

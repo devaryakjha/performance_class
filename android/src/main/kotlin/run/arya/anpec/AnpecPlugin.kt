@@ -1,4 +1,4 @@
-package run.arya.performance_class
+package run.arya.anpec
 
 import android.app.ActivityManager
 import android.content.Context
@@ -12,12 +12,12 @@ import java.io.RandomAccessFile
 import java.util.Locale
 import kotlin.math.ceil
 
-class PerformanceClassPlugin: FlutterPlugin, MethodCallHandler {
+class AnpecPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
   private lateinit var context: Context
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "performance_class")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "anpec")
     channel.setMethodCallHandler(this)
     context = flutterPluginBinding.applicationContext
   }

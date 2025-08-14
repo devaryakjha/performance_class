@@ -17,7 +17,7 @@ class PerformanceClassifier {
   PerformanceClassifier._internal();
 
   // Platform channel for Android-specific features
-  static const MethodChannel _channel = MethodChannel('performance_class');
+  static const MethodChannel _channel = MethodChannel('anpec');
 
   /// Get the singleton instance of PerformanceClassifier
   static PerformanceClassifier get instance => _instance;
